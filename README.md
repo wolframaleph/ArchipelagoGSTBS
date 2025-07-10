@@ -57,6 +57,7 @@ This release targets the inclusion of many of the remaining features of the stan
 * weapon unleash randomization
 * Iron Sun ruleset compatibility (from GS-Randomizer 2.0)
 * "offically" supported tracker integration
+* entrance and door randomization at a later date
 
 &nbsp;
 
