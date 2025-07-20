@@ -1,7 +1,7 @@
 # Ported from https://github.com/Karanum/gs2-randomiser2/blob/master/randomiser/game_data/items.js
 
 import struct
-from copy import deepcopy
+import pickle
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 import orjson
@@ -74,7 +74,7 @@ def load_item_data_table(rom: Rom, lines: dict[str, GSTBSInternalStringData]) ->
 
 def dump_item_data_table(data_table: dict[str, GSTBSInternalItemData], file_path: "Path") -> None:
     # these may require special handling per data type, so each table will have its own dump function
-    temp_data = deepcopy(data_table)  # prevents the ability to change the data within the program
+    temp_data = pickle.loads(pickle.dumps(data_table))  # faster than the deepcopy
     for k, v in temp_data.items():
         temp_data[k].name = format_line(v.name, 'pretty')
         temp_data[k].desc = format_line(v.desc, 'pretty')
