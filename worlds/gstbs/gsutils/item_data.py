@@ -62,7 +62,7 @@ def read_item(rom: Rom, id_: int, name: str, desc: str) -> GSTBSInternalItemData
     return item_data
 
 
-def load_item_data_table(rom: Rom, lines: dict[str, GSTBSInternalStringData]) -> dict[str, GSTBSInternalItemData]:
+def load_item_data(rom: Rom, lines: dict[str, GSTBSInternalStringData]) -> dict[str, GSTBSInternalItemData]:
     item_data_table : dict[str, GSTBSInternalItemData] = dict()
     for i in range(_ITEM_TABLE_LEN):
         name = read_line(lines, str(_ITEM_NAME_OFFSET + i))
@@ -72,9 +72,9 @@ def load_item_data_table(rom: Rom, lines: dict[str, GSTBSInternalStringData]) ->
     return item_data_table
 
 
-def dump_item_data_table(data_table: dict[str, GSTBSInternalItemData], file_path: "Path") -> None:
+def dump_item_data(data: dict[str, GSTBSInternalItemData], file_path: "Path") -> None:
     # these may require special handling per data type, so each table will have its own dump function
-    temp_data = pickle.loads(pickle.dumps(data_table))  # faster than the deepcopy
+    temp_data = pickle.loads(pickle.dumps(data))  # faster than the deepcopy
     for k, v in temp_data.items():
         temp_data[k].name = format_line(v.name, 'pretty')
         temp_data[k].desc = format_line(v.desc, 'pretty')

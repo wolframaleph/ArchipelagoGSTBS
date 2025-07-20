@@ -1,7 +1,7 @@
 import sys
 from pathlib import Path
 
-from .item_data import load_item_data_table, dump_item_data_table
+from .item_data import load_item_data, dump_item_data
 from .text_utils import load_tree_data, load_string_table
 
 
@@ -13,8 +13,8 @@ def main() -> None:
 
     forest = load_tree_data(base_rom)
     lines = load_string_table(base_rom, forest)
-    items = load_item_data_table(base_rom, lines)
-    dump_item_data_table(items, file_dir_path / 'items.json')
+    items = load_item_data(base_rom, lines)
+    dump_item_data(items, file_dir_path / 'items.json')
 
 
 if __name__ == '__main__':
