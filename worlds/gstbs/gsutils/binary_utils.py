@@ -85,6 +85,9 @@ def gbarom_bitmask(val) -> int:
 # 28 SHORT = Use ability
 # 2a SHORT = ?
 ITEM_STRUCT_FMT: str = f'<HBBBBHhbBBBHII{4*"BbH"}HH'
+ITEM_STRUCT_LEN: int = 44
+if struct.calcsize(ITEM_STRUCT_FMT) != ITEM_STRUCT_LEN:
+    raise RuntimeError(f'{ITEM_STRUCT_FMT} size is incorrect')
 
 # 0807EE58 = Ability data (16 bytes per entry)
 # 00 BYTE - Target
@@ -102,4 +105,6 @@ ITEM_STRUCT_FMT: str = f'<HBBBBHhbBBBHII{4*"BbH"}HH'
 # 0e BYTE - ???
 # 0f BYTE - ???
 ABILITY_STRUCT_FMT: str = '<BBBBHBBBBHBBBB'
-# TODO add guards
+ABILITY_STRUCT_LEN: int = 16
+if struct.calcsize(ABILITY_STRUCT_FMT) != ABILITY_STRUCT_LEN:
+    raise RuntimeError(f'{ABILITY_STRUCT_FMT} size is incorrect')

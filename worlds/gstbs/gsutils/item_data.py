@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 import orjson
 
-from .binary_utils import Rom, ITEM_STRUCT_FMT
+from .binary_utils import Rom, ITEM_STRUCT_FMT, ITEM_STRUCT_LEN
 from .text_utils import read_line, format_line, GSTBSInternalStringData
 
 if TYPE_CHECKING:
@@ -14,7 +14,6 @@ if TYPE_CHECKING:
 
 _ITEM_TABLE_OFFSET: int = 0x7B6A8
 _ITEM_TABLE_LEN: int = 269
-_ITEM_STRUCT_LEN: int = 44
 _ITEM_NAME_START: int = 386
 _ITEM_DESC_START: int = 117
 
@@ -44,7 +43,7 @@ class GSTBSInternalItemData:
 
 
 def read_item(rom: Rom, id_: int, name: str, desc: str) -> GSTBSInternalItemData:
-    addr: int = _ITEM_TABLE_OFFSET + _ITEM_STRUCT_LEN * int(id_)
+    addr: int = _ITEM_TABLE_OFFSET + ITEM_STRUCT_LEN * int(id_)
     data: tuple = struct.unpack_from(ITEM_STRUCT_FMT, rom, addr)
     item_data = GSTBSInternalItemData(
         id = id_, name = name, desc = desc, addr = addr,

@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 import orjson
 
-from .binary_utils import Rom, ABILITY_STRUCT_FMT
+from .binary_utils import Rom, ABILITY_STRUCT_FMT, ABILITY_STRUCT_LEN
 from .text_utils import read_line, format_line, GSTBSInternalStringData
 
 if TYPE_CHECKING:
@@ -14,7 +14,6 @@ if TYPE_CHECKING:
 
 _ABILITY_TABLE_OFFSET: int = 0x7EE58
 _ABILITY_TABLE_LEN: int = 519
-_ABILITY_STRUCT_LEN: int = 16
 _ABILITY_NAME_START: int = 819
 _ABILITY_DESC_START: int = 1338
 
@@ -47,7 +46,7 @@ def get_ability_type(id_: int) -> str:
 
 
 def read_ability(rom: Rom, id_: int, name: str, desc: str): # -> GSTBSInternalAbilityData:
-    addr: int = _ABILITY_TABLE_OFFSET + _ABILITY_STRUCT_LEN * int(id_)
+    addr: int = _ABILITY_TABLE_OFFSET + ABILITY_STRUCT_LEN * int(id_)
     data: tuple = struct.unpack_from(ABILITY_STRUCT_FMT, rom, addr)
     ability_data = GSTBSInternalAbilityData(
         id = id_,
