@@ -64,50 +64,6 @@ def dump_string_table(data_table, file_path) -> None:
         f.write(b'\n')
 
 
-# function readTreeData(rom) {
-#     var nodes = [];
-#     var treeOffsetAddr = offsetTableAddr;
-#     for (var ti = 0; ti < 256; ++ti) {
-#         var treeOffset = rom[treeOffsetAddr] + (rom[treeOffsetAddr + 1] << 8);
-#         treeOffsetAddr += 2;
-#
-#         var treeAddr = forestAddr + treeOffset;
-#         var queue = [];
-#
-#         var node = {'path': ''};
-#         nodes.push(node);
-#         queue.push(node);
-#
-#         var offset = 0.5;
-#         var shift = 0;
-#         for (var i = 0; i < 64; ++i) {
-#             var byte = rom[treeAddr + i];
-#             for (var j = 0; j < 8; ++j) {
-#                 node = queue.pop();
-#                 if (byte & 1) {
-#                     offset += 0.5;
-#                     shift += 12;
-#                     var charAddr = treeAddr - 3 * Math.floor(offset);
-#                     var char = rom[charAddr] + (rom[charAddr + 1] << 8) + (rom[charAddr + 2] << 16);
-#                     char = char >> (shift % 24);
-#
-#                     node['char'] = char & 0xFFF;
-#                 } else {
-#                     var leftChild = {'path': '0' + node['path']}, rightChild = {'path': '1' + node['path']};
-#                     node['left'] = leftChild;
-#                     node['right'] = rightChild;
-#                     queue.push(rightChild, leftChild);
-#                 }
-#                 byte = byte >> 1;
-#
-#                 if (queue.length == 0) break;
-#             }
-#
-#             if (queue.length == 0) break;
-#         }
-#     }
-#     return nodes;
-# }
 def load_tree_data(rom) -> GSHuffmanForest:
     forest: GSHuffmanForest = GSHuffmanForest()
     huffman_ptrs: HuffmanPtrs = HuffmanPtrs(*struct.unpack_from(f'<II', rom, _HUFFMAN_OFFSET))
