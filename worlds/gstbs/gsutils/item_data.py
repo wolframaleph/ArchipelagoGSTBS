@@ -15,32 +15,32 @@ if TYPE_CHECKING:
 _ITEM_TABLE_OFFSET: int = 0x7B6A8
 _ITEM_TABLE_LEN: int = 269
 _ITEM_STRUCT_LEN: int = 44
-_ITEM_NAME_OFFSET: int = 386
-_ITEM_DESC_OFFSET: int = 117
+_ITEM_NAME_START: int = 386
+_ITEM_DESC_START: int = 117
 
 
 @dataclass
 class GSTBSInternalItemData:
-    id : int  # this is technically also an index. The dict key for each item will be str(id)
-    name : str
-    desc : str
-    addr : int
-    cost : int
-    item_type : int
-    flags : int
-    equip_compat : int
-    # icon : int  # NOTE is this an address? or an id?
-    attack : int
-    defense : int
-    unleash_rate : int
-    use_type : int
-    unleash_id : int
+    id: int  # this is technically also an index. The dict key for each item will be str(id)
+    name: str
+    desc: str
+    addr: int
+    cost: int
+    item_type: int
+    flags: int
+    equip_compat: int
+    # icon: int  # NOTE is this an address? or an id?
+    attack: int
+    defense: int
+    unleash_rate: int
+    use_type: int
+    unleash_id: int
     # attribute : int  # NOTE attribute might be able to be randomized later?
-    use_effect : int  # moved up so that the equip effects array is last in the .json
-    equip_effects : list[list[int]]
+    use_effect: int  # moved up so that the equip effects array is last in the .json
+    equip_effects: list[list[int]]
 
-    def pack(self):
-        raise NotImplementedError  # will be needed for patching the rom
+    # def pack(self):
+    #     raise NotImplementedError  # will be needed for patching the rom
 
 
 def read_item(rom: Rom, id_: int, name: str, desc: str) -> GSTBSInternalItemData:
@@ -63,18 +63,18 @@ def read_item(rom: Rom, id_: int, name: str, desc: str) -> GSTBSInternalItemData
 
 
 def load_item_data(rom: Rom, lines: dict[str, GSTBSInternalStringData]) -> dict[str, GSTBSInternalItemData]:
-    item_data_table : dict[str, GSTBSInternalItemData] = dict()
+    item_data: dict[str, GSTBSInternalItemData] = dict()
     for i in range(_ITEM_TABLE_LEN):
-        name = read_line(lines, str(_ITEM_NAME_OFFSET + i))
+        name = read_line(lines, str(_ITEM_NAME_START + i))
         if name == '?\x00': continue
-        desc = read_line(lines, str(_ITEM_DESC_OFFSET + i))
-        item_data_table[str(i)] = read_item(rom, i, name, desc)
-    return item_data_table
+        desc = read_line(lines, str(_ITEM_DESC_START + i))
+        item_data[str(i)] = read_item(rom, i, name, desc)
+    return item_data
 
 
 def dump_item_data(data: dict[str, GSTBSInternalItemData], file_path: "Path") -> None:
     # these may require special handling per data type, so each table will have its own dump function
-    temp_data = pickle.loads(pickle.dumps(data))  # faster than the deepcopy
+    temp_data = pickle.loads(pickle.dumps(data))  # faster than the deepcopy method
     for k, v in temp_data.items():
         temp_data[k].name = format_line(v.name, 'pretty')
         temp_data[k].desc = format_line(v.desc, 'pretty')
