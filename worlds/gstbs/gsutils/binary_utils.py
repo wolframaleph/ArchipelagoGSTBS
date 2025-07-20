@@ -52,9 +52,10 @@ def gbarom_bitmask(val) -> int:
     return val & 0x00ffffff  # ROM data is addressed starting at 0x08000000 on the GBA
 
 
+# NOTE unknown bytes will be read but not stored for the sake of consistent indexing
+
 # item struct definition
 # NOTE credit to the GSTLA info docs - (Should determine proper attribution)
-# NOTE the unknown bytes will be read but not stored for the sake of consistent indexing
 # 00 SHORT = Price
 # 02 BYTE = Item type
 # 03 BYTE = Flags
@@ -84,3 +85,21 @@ def gbarom_bitmask(val) -> int:
 # 28 SHORT = Use ability
 # 2a SHORT = ?
 ITEM_STRUCT_FMT: str = f'<HBBBBHhbBBBHII{4*"BbH"}HH'
+
+# 0807EE58 = Ability data (16 bytes per entry)
+# 00 BYTE - Target
+# 01 BYTE - Type of move + Can be used in / outside of battle
+# 02 BYTE - Element
+# 03 BYTE - Ability Effect
+# 04 SHORT - Icon (might be a BYTE joined with a second unused one; have not checked if GS1 uses both bytes for this)
+# 06 BYTE - ???
+# 07 BYTE - ???
+# 08 BYTE - Range
+# 09 BYTE - PP Cost
+# 0a SHORT - Power
+# oc BYTE - Utility to use
+# 0d BYTE - ???
+# 0e BYTE - ???
+# 0f BYTE - ???
+ABILITY_STRUCT_FMT: str = '<BBBBHBBBBHBBBB'
+# TODO add guards
