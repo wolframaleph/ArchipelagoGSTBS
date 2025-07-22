@@ -1,5 +1,3 @@
-# Ported from https://github.com/Karanum/gs2-randomiser2/blob/master/randomiser/game_data/abilities.js
-
 import struct
 import pickle
 from dataclasses import dataclass
@@ -86,21 +84,3 @@ def dump_ability_data(data: dict[str, GSTBSInternalAbilityData], file_path: 'Pat
     with open(file_path, 'w+b') as f:
         f.write(orjson.dumps(temp_data, option=orjson.OPT_INDENT_2))
         f.write(b'\n')
-
-# def write_to_rom():
-#     pass
-#
-# def get_ability_element():
-#     pass
-#
-# def setStartingPsynergy():
-#     pass
-#
-# def adjust_ability_power():
-#     pass
-#
-# def adjust_psynergy_cost():
-#     pass
-#
-# def randomise_ability_range():
-#     pass

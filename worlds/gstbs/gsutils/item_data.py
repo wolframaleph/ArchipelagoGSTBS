@@ -38,9 +38,6 @@ class GSTBSInternalItemData:
     use_effect: int  # moved up so that the equip effects array is last in the .json
     equip_effects: list[list[int]]
 
-    # def pack(self):
-    #     raise NotImplementedError  # will be needed for patching the rom
-
 
 def read_item(rom: Rom, id_: int, name: str, desc: str) -> GSTBSInternalItemData:
     addr: int = _ITEM_TABLE_OFFSET + ITEM_STRUCT_LEN * int(id_)
@@ -80,40 +77,3 @@ def dump_item_data(data: dict[str, GSTBSInternalItemData], file_path: "Path") ->
     with open(file_path, 'w+b') as f:
         f.write(orjson.dumps(temp_data, option=orjson.OPT_INDENT_2))
         f.write(b'\n')
-
-
-# def randomize_compatibilty():
-#     pass
-#
-# def adjust_equip_prices():
-#     pass
-#
-# def adjust_stats():
-#     pass
-#
-# def shuffle_weapon_stats():
-#     pass
-#
-# def shuffle_armor_stats():
-#     pass
-#
-# def shuffle_weapon_effects():
-#     pass
-#
-# def shuffle_armor_effects():
-#     pass
-#
-# def shuffle_curses():
-#     pass
-#
-# def disable_curses():
-#     pass
-#
-# def sort_weapon_array():
-#     pass
-#
-# def sort_armor_array():
-#     pass
-#
-# def get_armor_score():
-#     pass
