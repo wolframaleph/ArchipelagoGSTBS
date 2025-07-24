@@ -1,35 +1,18 @@
-import struct
 import pickle
-from dataclasses import dataclass
-from typing import TYPE_CHECKING
 import orjson
+from typing import TYPE_CHECKING
 
-from .binary_utils import Rom, ABILITY_STRUCT_FMT, ABILITY_STRUCT_LEN
-from .text_utils import read_line, format_line, GSTBSInternalStringData
+from .gs1_defs import GSTBSInternalStringData, GSTBSInternalAbilityData, ability_struct, ABILITY_STRUCT_LEN
+from .text_utils import read_line, format_line
 
 if TYPE_CHECKING:
     from pathlib import Path
+    from .rom_utils import Rom
 
 _ABILITY_TABLE_OFFSET: int = 0x7EE58
 _ABILITY_TABLE_LEN: int = 519
 _ABILITY_NAME_START: int = 819
 _ABILITY_DESC_START: int = 1338
-
-
-@dataclass
-class GSTBSInternalAbilityData:
-    id: int  # this is technically also an index. The dict key for each item will be str(id)
-    name: str
-    desc: str
-    addr: int
-    type: str
-    target: int
-    damage_type: int
-    element: int
-    range: int
-    cost: int
-    power: int
-    effect: int
 
 
 def get_ability_type(id_: int) -> str:
@@ -43,9 +26,9 @@ def get_ability_type(id_: int) -> str:
     else: raise ValueError(f'id {id_} exceeds length of ability table')
 
 
-def read_ability(rom: Rom, id_: int, name: str, desc: str): # -> GSTBSInternalAbilityData:
+def read_ability(rom: 'Rom', id_: int, name: str, desc: str): # -> GSTBSInternalAbilityData:
     addr: int = _ABILITY_TABLE_OFFSET + ABILITY_STRUCT_LEN * int(id_)
-    data: tuple = struct.unpack_from(ABILITY_STRUCT_FMT, rom, addr)
+    data: tuple = ability_struct.unpack_from(rom.mem_view, addr)
     ability_data = GSTBSInternalAbilityData(
         id = id_,
         name = name,
@@ -64,7 +47,7 @@ def read_ability(rom: Rom, id_: int, name: str, desc: str): # -> GSTBSInternalAb
     return ability_data
 
 
-def load_ability_data(rom: Rom, lines: dict[str, GSTBSInternalStringData]) -> dict[str, GSTBSInternalAbilityData]:
+def load_ability_data(rom: 'Rom', lines: dict[str, GSTBSInternalStringData]) -> dict[str, GSTBSInternalAbilityData]:
     ability_data: dict[str, GSTBSInternalAbilityData] = dict()
     for i in range(_ABILITY_TABLE_LEN):
         name = read_line(lines, str(_ABILITY_NAME_START + i))
