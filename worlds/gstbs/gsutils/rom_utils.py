@@ -44,7 +44,16 @@ class Rom:
         end_addr = start_addr + len(data)
         self.mem_view[start_addr:end_addr] = data
 
-    def iter_bits(self, addr, len_bytes):
+    def iter_bits(self, addr):
+        byte_addr = gbarom_bitmask(addr)
+        while True:
+            bits = self.mem_view[addr]
+            for _ in range(8):
+                yield bits & 1
+                bits >>= 1
+            addr += 1
+
+    def iter_bits_bounded(self, addr, len_bytes):
         start_addr = gbarom_bitmask(addr)
         end_addr = start_addr + len_bytes
         for byte in self.mem_view[start_addr:end_addr]:

@@ -79,8 +79,8 @@ def load_tree_data(rom: 'Rom') -> GSHuffmanForest:
         offset: float = .5  # moves the the address back by 3 bytes every other 0b1, starting with the first
         shift: int = 0  # addresses the correct 12 bits of the 24 bit (3 byte) read
 
-        # bit_reader = BitReader(rom, tree_addr)
-        for bit in rom.iter_bits(tree_addr, 64):  # reads the next block of 512 bits (64 bytes)
+
+        for bit in rom.iter_bits_bounded(tree_addr, 64):  # reads the next block of 512 bits (64 bytes)
             node = stack.pop()
             if bit == 1:
                 offset += 0.5
@@ -104,7 +104,7 @@ def load_tree_data(rom: 'Rom') -> GSHuffmanForest:
     return forest
 
 def decompress_string(rom: 'Rom', forest: GSHuffmanForest, text_ptr, id_: str):
-    bit_reader = BitReader(rom, text_ptr)
+    bit_reader = rom.iter_bits(text_ptr)
     text: str = ''
     char: int = 0
     while True:  # emulate c do-while loop
@@ -114,7 +114,7 @@ def decompress_string(rom: 'Rom', forest: GSHuffmanForest, text_ptr, id_: str):
                 node = node.right
             else:
                 node = node.left
-        char = enforce_c_type_range('uchar', node.symbol)
+        char = enforce_c_type_range('uchar', node.symbol)  # NOTE this guard adds about 30 ms to the read
         text += chr(char)
         if not char: break
     return GSTBSInternalStringData(id_, text_ptr, text)
